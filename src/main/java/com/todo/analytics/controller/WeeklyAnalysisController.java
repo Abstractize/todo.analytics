@@ -25,7 +25,9 @@ public class WeeklyAnalysisController {
     @GetMapping("/weekly")
     public CompletableFuture<WeeklyAnalysis> getWeeklyAnalytics(
             @RequestParam(required = true) UUID userId,
-            @RequestParam(required = true) OffsetDateTime weekStartUtc) {
-        return weeklyAnalysisService.getWeeklyAnalytics(userId, weekStartUtc);
+            @RequestParam(required = true) String weekStartUtc) {
+
+        OffsetDateTime weekStart = OffsetDateTime.parse(weekStartUtc);
+        return weeklyAnalysisService.getWeeklyAnalytics(userId, weekStart);
     }
 }
