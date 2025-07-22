@@ -25,12 +25,9 @@ public class SummaryController {
 
     @GetMapping("/summary")
     public CompletableFuture<AnalyticSummary> getAnalyticsSummary() {
-        UUID userId = identityProvider.getUserId().orElse(null);
 
-        if (userId == null) {
-            throw new IllegalStateException("Unauthorized user cannot access analytics summary");
-        }
-
+        UUID userId = identityProvider.getUserId()
+                .orElseThrow(() -> new IllegalStateException("User ID not found in the security context"));
         String jwt = identityProvider.getJwt()
                 .orElseThrow(() -> new IllegalStateException("JWT token not found in the security context"));
 

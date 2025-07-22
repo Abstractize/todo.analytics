@@ -1,7 +1,6 @@
 package com.todo.analytics.service;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,12 @@ public class WeeklyAnalysisService {
     }
 
     @Async
-    public CompletableFuture<WeeklyAnalysis> getWeeklyAnalytics(UUID userId, OffsetDateTime weekStartUtc, String jwt) {
-        return taskServiceClient.fetchWeeklyAnalysis(userId, weekStartUtc, jwt);
+    public CompletableFuture<WeeklyAnalysis> getWeeklyAnalytics(OffsetDateTime dayUtc, String jwt) {
+
+        OffsetDateTime firstDayOfWeek = dayUtc.minusDays(dayUtc.getDayOfWeek().getValue() - 1)
+                .withHour(0).withMinute(0).withSecond(0).withNano(0);
+        dayUtc = firstDayOfWeek;
+
+        return taskServiceClient.fetchWeeklyAnalysis(firstDayOfWeek, jwt);
     }
 }
