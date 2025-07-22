@@ -50,4 +50,14 @@ public class IdentityProvider {
 
         return Optional.empty();
     }
+
+    public Optional<String> getJwt() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth instanceof org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken) {
+            return Optional.of(
+                    ((org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken) auth)
+                            .getToken().getTokenValue());
+        }
+        return Optional.empty();
+    }
 }

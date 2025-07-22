@@ -4,7 +4,6 @@ import com.todo.analytics.model.AnalyticSummary;
 import com.todo.analytics.model.DailyStat;
 import com.todo.analytics.model.WeeklyAnalysis;
 import com.todo.analytics.grpc.GetTasksRequest;
-import com.todo.analytics.grpc.GetWeeklyTasksRequest;
 import com.todo.analytics.grpc.TaskAnalyticsServiceGrpc;
 import com.todo.analytics.grpc.TaskItem;
 import com.todo.analytics.grpc.TaskList;
@@ -14,8 +13,6 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.Metadata;
 import io.grpc.stub.MetadataUtils;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
