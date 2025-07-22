@@ -79,6 +79,19 @@
 			<artifactId>javax.annotation-api</artifactId>
 			<version>1.3.2</version>
 		</dependency>
+
+		<!-- JWT -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!-- Spring Security OAuth2 Resource Server (JWT support) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

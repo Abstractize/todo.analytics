@@ -25,8 +25,8 @@ public class SummaryService {
     }
 
     @Async
-    public CompletableFuture<AnalyticSummary> getAnalyticSummary(UUID userId) {
-        CompletableFuture<AnalyticSummary> result = taskServiceClient.fetchAnalyticSummary(userId);
+    public CompletableFuture<AnalyticSummary> getAnalyticSummary(UUID userId, String jwt) {
+        CompletableFuture<AnalyticSummary> result = taskServiceClient.fetchAnalyticSummary(userId, jwt);
 
         result.thenAccept(analyticSummary -> analyticHistoryRepository.save(AnalyticMapper.toHistory(analyticSummary)));
 
