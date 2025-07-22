@@ -4,12 +4,13 @@ import com.todo.analytics.data.entity.AnalyticHistory;
 import com.todo.analytics.model.AnalyticSummary;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 public class AnalyticMapper {
 
-    public static AnalyticHistory toHistory(AnalyticSummary summary) {
+    public static AnalyticHistory toHistory(AnalyticSummary summary, UUID userId) {
         return new AnalyticHistory(
-                summary.getUserId(),
+                userId,
                 summary.getCreatedTasks(),
                 summary.getCompletedTasks(),
                 summary.getCompletionRate(),
@@ -20,7 +21,6 @@ public class AnalyticMapper {
 
     public static AnalyticSummary toSummary(AnalyticHistory history) {
         return new AnalyticSummary(
-                history.getUserId(),
                 history.getCreatedTasks(),
                 history.getCompletedTasks(),
                 history.getCompletionRate(),

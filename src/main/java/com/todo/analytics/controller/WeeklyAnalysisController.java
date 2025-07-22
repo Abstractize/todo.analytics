@@ -1,7 +1,6 @@
 package com.todo.analytics.controller;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,18 +26,13 @@ public class WeeklyAnalysisController {
 
     @GetMapping("/weekly")
     public CompletableFuture<WeeklyAnalysis> getWeeklyAnalytics(
-            @RequestParam(required = true) String weekStartUtc) {
-
-        UUID userId = identityProvider.getUserId().orElse(null);
-
-        if (userId == null) {
-            throw new IllegalStateException("Unauthorized user cannot access weekly analytics");
-        }
+            @RequestParam(required = true) String dayUtc) {
 
         String jwt = identityProvider.getJwt()
                 .orElseThrow(() -> new IllegalStateException("JWT token not found in the security context"));
 
-        OffsetDateTime weekStart = OffsetDateTime.parse(weekStartUtc);
-        return weeklyAnalysisService.getWeeklyAnalytics(userId, weekStart, jwt);
+        OffsetDateTime day = OffsetDateTime.parse(dayUtc);
+
+        return weeklyAnalysisService.getWeeklyAnalytics(day, jwt);
     }
 }

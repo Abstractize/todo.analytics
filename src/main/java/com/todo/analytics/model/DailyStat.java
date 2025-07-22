@@ -1,20 +1,20 @@
 package com.todo.analytics.model;
 
-import java.time.OffsetDateTime;
+import java.time.DayOfWeek;
 
 public class DailyStat {
-    private final OffsetDateTime date;
+    private final DayOfWeek dayOfWeek;
     private final int created;
     private final int completed;
 
-    public DailyStat(OffsetDateTime date, int created, int completed) {
-        this.date = date;
+    public DailyStat(DayOfWeek dayOfWeek, int created, int completed) {
+        this.dayOfWeek = dayOfWeek;
         this.created = created;
         this.completed = completed;
     }
 
-    public OffsetDateTime getDate() {
-        return date;
+    public DayOfWeek getDayOfWeek() {
+        return dayOfWeek;
     }
 
     public int getCreated() {
