@@ -21,7 +21,7 @@ public class WeeklyAnalysisService {
     }
 
     @Async
-    public CompletableFuture<WeeklyAnalysis> getWeeklyAnalytics(UUID userId, OffsetDateTime weekStartUtc) {
-        return taskServiceClient.fetchWeeklyAnalysis(userId, weekStartUtc);
+    public CompletableFuture<WeeklyAnalysis> getWeeklyAnalytics(UUID userId, OffsetDateTime weekStartUtc, String jwt) {
+        return taskServiceClient.fetchWeeklyAnalysis(userId, weekStartUtc, jwt);
     }
 }

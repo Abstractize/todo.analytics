@@ -10,24 +10,35 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.todo.analytics.model.WeeklyAnalysis;
+import com.todo.analytics.provider.IdentityProvider;
 import com.todo.analytics.service.WeeklyAnalysisService;
 
 @RestController
 public class WeeklyAnalysisController {
 
+    private final IdentityProvider identityProvider;
     private final WeeklyAnalysisService weeklyAnalysisService;
 
     @Autowired
-    public WeeklyAnalysisController(WeeklyAnalysisService weeklyAnalysisService) {
+    public WeeklyAnalysisController(WeeklyAnalysisService weeklyAnalysisService, IdentityProvider identityProvider) {
         this.weeklyAnalysisService = weeklyAnalysisService;
+        this.identityProvider = identityProvider;
     }
 
     @GetMapping("/weekly")
     public CompletableFuture<WeeklyAnalysis> getWeeklyAnalytics(
-            @RequestParam(required = true) UUID userId,
             @RequestParam(required = true) String weekStartUtc) {
 
+        UUID userId = identityProvider.getUserId().orElse(null);
+
+        if (userId == null) {
+            throw new IllegalStateException("Unauthorized user cannot access weekly analytics");
+        }
+
+        String jwt = identityProvider.getJwt()
+                .orElseThrow(() -> new IllegalStateException("JWT token not found in the security context"));
+
         OffsetDateTime weekStart = OffsetDateTime.parse(weekStartUtc);
-        return weeklyAnalysisService.getWeeklyAnalytics(userId, weekStart);
+        return weeklyAnalysisService.getWeeklyAnalytics(userId, weekStart, jwt);
     }
 }

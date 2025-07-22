@@ -4,13 +4,15 @@ import com.todo.analytics.model.AnalyticSummary;
 import com.todo.analytics.model.DailyStat;
 import com.todo.analytics.model.WeeklyAnalysis;
 import com.todo.analytics.grpc.GetTasksRequest;
-import com.todo.analytics.grpc.GetWeeklyTasksRequest;
 import com.todo.analytics.grpc.TaskAnalyticsServiceGrpc;
 import com.todo.analytics.grpc.TaskItem;
 import com.todo.analytics.grpc.TaskList;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.Metadata;
+import io.grpc.stub.MetadataUtils;
+
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -38,16 +40,23 @@ public class TaskServiceClient {
         futureStub = TaskAnalyticsServiceGrpc.newFutureStub(channel);
     }
 
-    public CompletableFuture<AnalyticSummary> fetchAnalyticSummary(UUID userId) {
+    public CompletableFuture<AnalyticSummary> fetchAnalyticSummary(UUID userId, String jwt) {
+        Metadata metadata = new Metadata();
+        Metadata.Key<String> AUTHORIZATION_HEADER = Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
+        metadata.put(AUTHORIZATION_HEADER, "Bearer " + jwt);
+
+        TaskAnalyticsServiceGrpc.TaskAnalyticsServiceFutureStub stubWithHeaders = futureStub
+                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(metadata));
+
         GetTasksRequest request = GetTasksRequest.newBuilder()
                 .setUserId(userId.toString())
                 .build();
 
         CompletableFuture<TaskList> grpcFuture = new CompletableFuture<>();
 
-        futureStub.getUserTasks(request).addListener(() -> {
+        stubWithHeaders.getUserTasks(request).addListener(() -> {
             try {
-                grpcFuture.complete(futureStub.getUserTasks(request).get());
+                grpcFuture.complete(stubWithHeaders.getUserTasks(request).get());
             } catch (Exception e) {
                 grpcFuture.completeExceptionally(e);
             }
@@ -82,19 +91,23 @@ public class TaskServiceClient {
         });
     }
 
-    public CompletableFuture<WeeklyAnalysis> fetchWeeklyAnalysis(UUID userId, OffsetDateTime weekStartUtc) {
-        System.out.println("Fetching weekly analysis for user: " + userId + " starting from: " + weekStartUtc);
+    public CompletableFuture<WeeklyAnalysis> fetchWeeklyAnalysis(UUID userId, OffsetDateTime weekStartUtc, String jwt) {
+        Metadata metadata = new Metadata();
+        Metadata.Key<String> AUTHORIZATION_HEADER = Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
+        metadata.put(AUTHORIZATION_HEADER, "Bearer " + jwt);
 
-        GetWeeklyTasksRequest request = GetWeeklyTasksRequest.newBuilder()
+        TaskAnalyticsServiceGrpc.TaskAnalyticsServiceFutureStub stubWithHeaders = futureStub
+                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(metadata));
+
+        GetTasksRequest request = GetTasksRequest.newBuilder()
                 .setUserId(userId.toString())
-                .setWeekStartDateUtc(weekStartUtc.toString())
                 .build();
 
         CompletableFuture<TaskList> grpcFuture = new CompletableFuture<>();
 
-        futureStub.getUserTasksOfWeek(request).addListener(() -> {
+        stubWithHeaders.getUserTasks(request).addListener(() -> {
             try {
-                grpcFuture.complete(futureStub.getUserTasksOfWeek(request).get());
+                grpcFuture.complete(stubWithHeaders.getUserTasks(request).get());
             } catch (Exception e) {
                 grpcFuture.completeExceptionally(e);
             }
